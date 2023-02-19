@@ -16,7 +16,7 @@ class MainScreenViewModel @Inject constructor(
     private val getTranslationUseCase: GetTranslationUseCase
 ) : ViewModel() {
 
-    private var _state: MutableStateFlow<TranslationUiState<Translation>> =
+    private val _state: MutableStateFlow<TranslationUiState<Translation>> =
         MutableStateFlow(TranslationUiState.Empty)
 
     val state = _state.asStateFlow()
@@ -25,10 +25,10 @@ class MainScreenViewModel @Inject constructor(
         _state.value = TranslationUiState.Loading
         viewModelScope.launch {
             val result = getTranslationUseCase(data)
-            if (result.message != null) {
-                _state.value = TranslationUiState.Failure(Throwable(result.message))
+            _state.value = if (result.message != null) {
+                TranslationUiState.Failure(Throwable(result.message))
             } else {
-                _state.value = TranslationUiState.Success(result.data)
+                TranslationUiState.Success(result.data)
             }
         }
     }
