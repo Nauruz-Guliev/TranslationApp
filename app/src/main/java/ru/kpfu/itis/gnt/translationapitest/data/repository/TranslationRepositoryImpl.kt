@@ -15,6 +15,7 @@ class TranslationRepositoryImpl @Inject constructor(
     private val dispatcher: CoroutineDispatcher
 ) : TranslationRepository {
 
+    //todo improve error handling
     override suspend fun getTranslation(data: String): Resource<Translation> =
         withContext(dispatcher) {
             return@withContext try {
@@ -22,14 +23,23 @@ class TranslationRepositoryImpl @Inject constructor(
                     request = TranslationRequest(
                         data = data
                     )
-                ).execute().body()
-                    ?: return@withContext Resource.Error(message = "Unable to retrieve the translation")
-                if (response.err != null) return@withContext Resource.Error(message = response.err.toString())
-                Resource.Success(
-                    data = TranslationMapper.mapFrom(
-                        model = response
+                ).execute()
+                val body = response.body()
+                if (body != null) {
+                    if (response.code() == 200) {
+                        return@withContext Resource.Success(
+                            data = TranslationMapper.mapFrom(model = body)
+                        )
+                    } else {
+                        return@withContext Resource.Error(
+                            message = response.code().toString() + " " + response.message()
+                        )
+                    }
+                } else {
+                    return@withContext Resource.Error(
+                        "Unable to retrieve the translation"
                     )
-                )
+                }
             } catch (e: Exception) {
                 Resource.Error(message = e.message ?: " Unknown error")
             }

@@ -12,10 +12,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 import ru.kpfu.itis.gnt.translationapitest.data.remote.TranslationApi
+import ru.kpfu.itis.gnt.translationapitest.data.remote.TranslationApi.Companion.BASE_URL
 import javax.inject.Singleton
 
 
-private const val BASE_URL = "https://api-b2b.backenster.com/b1/api/v3/"
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -40,9 +40,15 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideMoshi(): Moshi {
+    fun provideJsonAdapterFactory(): KotlinJsonAdapterFactory {
+        return KotlinJsonAdapterFactory()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMoshi(kotlinJsonAdapterFactory: KotlinJsonAdapterFactory): Moshi {
         return Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
+            .add(kotlinJsonAdapterFactory)
             .build()
     }
 

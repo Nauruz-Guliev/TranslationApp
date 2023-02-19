@@ -3,6 +3,7 @@ package ru.kpfu.itis.gnt.translationapitest.presentation.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,14 +25,14 @@ fun MainScreen(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
-        var text by remember { mutableStateOf("") }
+        var text by rememberSaveable { mutableStateOf("") }
         Box {
             Column(
                 modifier = modifier
                     .align(Alignment.Center)
                     .padding(8.dp)
             ) {
-                TranslationResult(
+                TranslationResultState(
                     modifier = modifier, viewModel = viewModel
                 )
                 Row(modifier = modifier.fillMaxWidth()) {
@@ -58,7 +59,7 @@ fun MainScreen(
 }
 
 @Composable
-fun TranslationResult(modifier: Modifier, viewModel: MainScreenViewModel) {
+fun TranslationResultState(modifier: Modifier, viewModel: MainScreenViewModel) {
     Row {
         when (val result = viewModel.state.collectAsState().value) {
             is TranslationUiState.Success -> {
