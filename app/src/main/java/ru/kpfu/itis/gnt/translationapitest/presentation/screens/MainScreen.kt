@@ -11,6 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import ru.kpfu.itis.gnt.translationapitest.domain.models.Translation
 import ru.kpfu.itis.gnt.translationapitest.presentation.models.TranslationUiState
 
@@ -32,7 +33,9 @@ fun MainScreen(
                     .align(Alignment.Center)
                     .padding(8.dp)
             ) {
-                Row {
+                Row(
+                    horizontalArrangement = Arrangement.Center
+                ) {
                     when (val result = viewModel.state.collectAsState().value) {
                         is TranslationUiState.Success -> {
                             CustomText(
@@ -49,7 +52,14 @@ fun MainScreen(
                             )
                         }
                         is TranslationUiState.Loading -> {
-                            CircularProgressIndicator()
+                            Column(
+                                modifier = modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = modifier.padding(24.dp)
+                                )
+                            }
                         }
                         is TranslationUiState.Failure -> {
 
@@ -101,6 +111,6 @@ fun CustomText(modifier: Modifier, text: String, fontColor: Color) {
 @Preview(showBackground = true)
 @Composable
 private fun MainScreenPreview() {
-    
+
 }
 

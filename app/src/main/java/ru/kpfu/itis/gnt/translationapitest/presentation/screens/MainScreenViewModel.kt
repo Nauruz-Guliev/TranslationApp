@@ -21,8 +21,8 @@ class MainScreenViewModel @Inject constructor(
     val state = translationUiState
 
     fun getTranslation(data: String) {
+        translationUiState.value = TranslationUiState.Loading
         viewModelScope.launch {
-            translationUiState
             val result = getTranslationUseCase(data)
             if (result.message != null) {
                 translationUiState.value = TranslationUiState.Failure(Throwable(result.message))
