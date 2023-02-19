@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.kpfu.itis.gnt.translationapitest.domain.models.Translation
 import ru.kpfu.itis.gnt.translationapitest.domain.useCases.GetTranslationUseCase
@@ -15,19 +16,19 @@ class MainScreenViewModel @Inject constructor(
     private val getTranslationUseCase: GetTranslationUseCase
 ) : ViewModel() {
 
-    private var translationUiState: MutableStateFlow<TranslationUiState<Translation>> =
+    private var _state: MutableStateFlow<TranslationUiState<Translation>> =
         MutableStateFlow(TranslationUiState.Empty)
 
-    val state = translationUiState
+    val state = _state.asStateFlow()
 
     fun getTranslation(data: String) {
-        translationUiState.value = TranslationUiState.Loading
+        _state.value = TranslationUiState.Loading
         viewModelScope.launch {
             val result = getTranslationUseCase(data)
             if (result.message != null) {
-                translationUiState.value = TranslationUiState.Failure(Throwable(result.message))
+                _state.value = TranslationUiState.Failure(Throwable(result.message))
             } else {
-                translationUiState.value = TranslationUiState.Success(result.data)
+                _state.value = TranslationUiState.Success(result.data)
             }
         }
     }

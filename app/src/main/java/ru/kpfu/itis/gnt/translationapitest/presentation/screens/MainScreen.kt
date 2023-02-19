@@ -33,9 +33,7 @@ fun MainScreen(
                     .align(Alignment.Center)
                     .padding(8.dp)
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.Center
-                ) {
+                Row {
                     when (val result = viewModel.state.collectAsState().value) {
                         is TranslationUiState.Success -> {
                             CustomText(
@@ -62,7 +60,6 @@ fun MainScreen(
                             }
                         }
                         is TranslationUiState.Failure -> {
-
                             CustomText(
                                 modifier = modifier,
                                 text = result.error.message.toString(),
