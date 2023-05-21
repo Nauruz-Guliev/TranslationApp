@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">TranslationApiTest</string>
+    <string name="error_not_found">Translation was not found</string>
+    <string name="error_parse">Unable to parse backend response</string>
+    <string name="error_backend">Backend error occured</string>
+    <string name="error_connection">Unable to connect to server</string>
+    <string name="error_data_access">Failed to retrieve the data</string>
+    <string name="error_locale">Invalid locale</string>
 </resources>
