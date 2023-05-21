@@ -1,7 +1,10 @@
 package ru.kpfu.itis.gnt.translationapitest.presentation.screens.main
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Scaffold
+import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -10,12 +13,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import ru.kpfu.itis.gnt.translationapitest.BuildConfig
 import ru.kpfu.itis.gnt.translationapitest.R
 import ru.kpfu.itis.gnt.translationapitest.core.exceptions.AppException
 import ru.kpfu.itis.gnt.translationapitest.domain.models.TranslationUiModel
@@ -100,7 +100,7 @@ fun TranslationResultState(
                 }
             }
             is TranslationUiState.Empty -> {
-                CustomText(
+                RegularText(
                     modifier = modifier,
                     text = stringResource(id = R.string.start_translating),
                     fontColor = Color.Black
@@ -119,14 +119,28 @@ fun TranslationResultState(
             is TranslationUiState.Failure -> {
                 when(result.error) {
                     is AppException.BackendException -> {
-                        CustomText(
-                            modifier = modifier,
-                            text = ((result.error).cause.localizedMessage?.toString() ?: result.error.cause.toString()) + BuildConfig.API_KEY +"  " + result.error.code,
-                            fontColor = Color.Red
-                        )
+                        Column {
+                            RegularText(
+                                modifier = modifier,
+                                text = (result.error).resource.getValue(),
+                                fontColor = Color.Black
+                            )
+                            RegularText(
+                                modifier = modifier,
+                                text = (result.error).code.toString(),
+                                fontColor = Color.Red,
+                                fontSize = dimensionResource(id = R.dimen.font_size_10),
+                            )
+                            RegularText(
+                                modifier = modifier,
+                                text = (result.error).cause.message.toString(),
+                                fontColor = Color.Black,
+                                fontSize = dimensionResource(id = R.dimen.font_size_7),
+                            )
+                        }
                     }
                     is AppException -> {
-                        CustomText(
+                        RegularText(
                             modifier = modifier,
                             text = (result.error).resource.getValue(),
                             fontColor = Color.Red
@@ -138,16 +152,4 @@ fun TranslationResultState(
     }
 }
 
-@Composable
-fun CustomText(modifier: Modifier, text: String, fontColor: Color) {
-    Text(
-        text = text,
-        fontSize = 20.sp,
-        textAlign = TextAlign.Center,
-        color = fontColor,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    )
-}
 

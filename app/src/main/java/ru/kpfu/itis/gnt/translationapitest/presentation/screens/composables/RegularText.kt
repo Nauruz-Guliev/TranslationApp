@@ -17,7 +17,7 @@ import ru.kpfu.itis.gnt.translationapitest.R
 fun RegularText(
     modifier: Modifier = Modifier,
     text: String,
-    fontSize: Dp = dimensionResource(id = R.dimen.font_size_2),
+    fontSize: Dp = dimensionResource(id = R.dimen.font_size_4),
     fontColor: Color = Color.Black,
     textAlign: TextAlign = TextAlign.Start
 ) {
