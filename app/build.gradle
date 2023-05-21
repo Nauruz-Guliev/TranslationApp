@@ -90,4 +90,10 @@ dependencies {
 
     implementation "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1"
 
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
+
+    def nav_version = "2.5.3"
+
+    implementation "androidx.navigation:navigation-compose:$nav_version"
+
 }

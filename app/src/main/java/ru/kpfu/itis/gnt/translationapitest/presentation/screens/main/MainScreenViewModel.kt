@@ -1,6 +1,5 @@
-package ru.kpfu.itis.gnt.translationapitest.presentation.screens
+package ru.kpfu.itis.gnt.translationapitest.presentation.screens.main
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -8,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.kpfu.itis.gnt.translationapitest.domain.models.TranslationUiModel
-import ru.kpfu.itis.gnt.translationapitest.domain.useCases.GetTranslationUseCase
+import ru.kpfu.itis.gnt.translationapitest.domain.useCases.main.GetTranslationUseCase
 import ru.kpfu.itis.gnt.translationapitest.presentation.models.TranslationUiState
 import java.util.*
 import javax.inject.Inject
@@ -24,7 +23,6 @@ class MainScreenViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     fun getTranslation(from: Locale, to: Locale, word: String) {
-        Log.e("COMPOSE", from.country + " " + word.toString())
         viewModelScope.launch {
             _state.emit(TranslationUiState.Loading)
             getTranslationUseCase(

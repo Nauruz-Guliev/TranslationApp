@@ -9,7 +9,7 @@ class TranslationMapper @Inject constructor() :
     BaseMapper<TranslationUiModel, TranslationResponseModel> {
     override fun toModel(model: TranslationResponseModel): TranslationUiModel = with(model) {
         TranslationUiModel(
-            definition = def.map { definition ->
+            definition = def.mapIndexed { index, definition ->
                 with(definition) {
                     TranslationUiModel.Definition(
                         fl = fl,
@@ -40,7 +40,8 @@ class TranslationMapper @Inject constructor() :
                                 )
                             }
                         },
-                        ts = ts
+                        ts = ts,
+                        id = index
                     )
                 }
             }

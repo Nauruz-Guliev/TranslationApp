@@ -4,6 +4,7 @@ data class TranslationUiModel(
     val definition: List<Definition>,
 ) {
     data class Definition(
+        val id: Int,
         val fl: String?,
         val pos: String,
         val text: String,

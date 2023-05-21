@@ -1,10 +1,13 @@
 package ru.kpfu.itis.gnt.translationapitest.data.repository
 
-import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import ru.kpfu.itis.gnt.translationapitest.R
+import ru.kpfu.itis.gnt.translationapitest.core.exceptions.AppException
+import ru.kpfu.itis.gnt.translationapitest.core.resource.Resource
 import ru.kpfu.itis.gnt.translationapitest.core.utils.checkTranslationLocale
 import ru.kpfu.itis.gnt.translationapitest.core.utils.wrapRetrofitError
+import ru.kpfu.itis.gnt.translationapitest.data.TemporaryStorage
 import ru.kpfu.itis.gnt.translationapitest.data.mappers.TranslationMapper
 import ru.kpfu.itis.gnt.translationapitest.data.remote.TranslationApi
 import ru.kpfu.itis.gnt.translationapitest.di.qualifiers.IoDispatcher
@@ -26,12 +29,31 @@ class TranslationRepositoryImpl @Inject constructor(
         try {
             val languages =
                 (from.language.toString() + "-" + to.language.toString()).checkTranslationLocale()
-            val result = wrapRetrofitError {
+            val result = mapper.toModel(wrapRetrofitError {
                 api.getTranslation(languages, word)
+            })
+            TemporaryStorage.definitions = result.definition
+            if (result.definition.isNotEmpty()) {
+                Result.success(result)
+            } else {
+                Result.failure(AppException.EmptyResultException(resource = Resource.String(R.string.no_data), Throwable()))
             }
-            Result.success(mapper.toModel(result))
         } catch (ex: Exception) {
             Result.failure(ex)
         }
     }
+
+    override suspend fun getDefinitionById(id: Int): Result<TranslationUiModel.Definition> {
+        return try {
+            Result.success(TemporaryStorage.definitions[id])
+        } catch (ex: Exception) {
+            Result.failure(
+                AppException.DataAccessException(
+                    resource = Resource.String(R.string.error_data_access),
+                    cause = ex
+                )
+            )
+        }
+    }
+
 }

@@ -1,4 +1,4 @@
-package ru.kpfu.itis.gnt.translationapitest.presentation.screens
+package ru.kpfu.itis.gnt.translationapitest.presentation.screens.main
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -8,81 +8,101 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import ru.kpfu.itis.gnt.translationapitest.App
+import androidx.navigation.NavController
 import ru.kpfu.itis.gnt.translationapitest.BuildConfig
+import ru.kpfu.itis.gnt.translationapitest.R
 import ru.kpfu.itis.gnt.translationapitest.core.exceptions.AppException
 import ru.kpfu.itis.gnt.translationapitest.domain.models.TranslationUiModel
 import ru.kpfu.itis.gnt.translationapitest.presentation.models.TranslationUiState
+import ru.kpfu.itis.gnt.translationapitest.presentation.navigation.Destinations
+import ru.kpfu.itis.gnt.translationapitest.presentation.screens.composables.RegularText
+import ru.kpfu.itis.gnt.translationapitest.presentation.screens.composables.TranslationList
 import java.util.*
 
+
+val translationAreaSize = 420.dp
 
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
+    navController: NavController,
     viewModel: MainScreenViewModel = hiltViewModel()
 ) {
-    Surface(
-        modifier = modifier.fillMaxSize(),
-        color = MaterialTheme.colors.background
-    ) {
-        var text by rememberSaveable { mutableStateOf("") }
-        val context = LocalContext.current
-        val locale = context.resources.configuration.locales[0]
-        Box {
+    var word by rememberSaveable { mutableStateOf("") }
+    val context = LocalContext.current
+    val localeTo = context.resources.configuration.locales[0]
+    val localeFrom = Locale.ENGLISH
+
+    Scaffold(modifier = Modifier.fillMaxSize()) {
+        it.calculateBottomPadding()
+        Column(
+            modifier = modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            TranslationResultState(
+                modifier = modifier.height(translationAreaSize), viewModel = viewModel,
+                navController = navController
+            )
             Column(
                 modifier = modifier
-                    .align(Alignment.Center)
-                    .padding(8.dp)
+                    .padding(
+                        start = dimensionResource(id = R.dimen.size_8),
+                        end = dimensionResource(id = R.dimen.size_8),
+                        bottom = dimensionResource(id = R.dimen.size_140)
+                    )
             ) {
-                TranslationResultState(
-                    modifier = modifier, viewModel = viewModel
+                TextField(
+                    value = word,
+                    onValueChange = { word = it },
+                    modifier = modifier.fillMaxWidth()
                 )
-                Row(modifier = modifier.fillMaxWidth()) {
-                    TextField(
-                        value = text,
-                        onValueChange = { text = it },
-                        modifier = modifier.fillMaxWidth()
+                Button(
+                    onClick = {
+                        viewModel.getTranslation(
+                            from = localeFrom,
+                            to = localeTo,
+                            word = word
+                        )
+                    },
+                    modifier = modifier.fillMaxWidth()
+                ) {
+                    RegularText(
+                        text = stringResource(id = R.string.translate),
+                        fontColor = Color.White
                     )
                 }
-                Row {
-                    Button(
-                        onClick = {
-                            viewModel.getTranslation(
-                                from = locale,
-                                to = Locale.ENGLISH,
-                                word = text
-                            )
-                        },
-                        modifier = modifier.fillMaxWidth()
-                    ) {
-                        Text("Translate")
-                    }
-                }
             }
-
         }
     }
 }
 
+
 @Composable
-fun TranslationResultState(modifier: Modifier, viewModel: MainScreenViewModel) {
+fun TranslationResultState(
+    modifier: Modifier,
+    viewModel: MainScreenViewModel,
+    navController: NavController
+) {
     Row {
         when (val result = viewModel.state.collectAsState().value) {
             is TranslationUiState.Success -> {
-                CustomText(
-                    modifier = modifier,
-                    text = (result.data as TranslationUiModel).definition.toString(),
-                    fontColor = Color.Green
-                )
+                TranslationList(
+                    list = (result.data as TranslationUiModel).definition,
+                    title = stringResource(id = R.string.definition),
+                ) { definition ->
+                    navController.navigate(Destinations.DETAILS + "${definition.id}")
+                }
             }
             is TranslationUiState.Empty -> {
                 CustomText(
                     modifier = modifier,
-                    text = "Now translation is empty",
+                    text = stringResource(id = R.string.start_translating),
                     fontColor = Color.Black
                 )
             }

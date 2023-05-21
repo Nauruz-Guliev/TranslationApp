@@ -6,4 +6,13 @@
     <string name="error_connection">Unable to connect to server</string>
     <string name="error_data_access">Failed to retrieve the data</string>
     <string name="error_locale">Invalid locale</string>
+    <string name="definition">Definition</string>
+    <string name="transcription">Transcription: %1s</string>
+    <string name="type">Type: %1s</string>
+    <string name="definition_amount">Amount of definitions: %1s</string>
+    <string name="translate">Translate</string>
+    <string name="start_translating">Start translating english words!</string>
+    <string name="no_data">No data found</string>
+    <string name="synonyms">Synonyms</string>
+    <string name="meaning">Meanings</string>
 </resources>
