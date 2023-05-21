@@ -14,7 +14,7 @@ fun TranslationList(
     modifier: Modifier = Modifier,
     list: List<TranslationUiModel.Definition>,
     title: String,
-    onItemClicked: (TranslationUiModel.Definition) -> Unit
+    onItemClicked: (Int) -> Unit
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         TitleText(

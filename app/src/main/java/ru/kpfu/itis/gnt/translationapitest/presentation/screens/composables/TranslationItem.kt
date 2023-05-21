@@ -19,7 +19,7 @@ import ru.kpfu.itis.gnt.translationapitest.domain.models.TranslationUiModel
 fun TranslationItem(
     modifier: Modifier = Modifier,
     definition: TranslationUiModel.Definition,
-    onItemClicked: (TranslationUiModel.Definition) -> Unit
+    onItemClicked: (Int) -> Unit
 ) {
     Card(
         modifier = modifier
@@ -28,7 +28,7 @@ fun TranslationItem(
                 horizontal = dimensionResource(id = R.dimen.size_4),
                 vertical = dimensionResource(id = R.dimen.size_2)
             ),
-        onClick = { onItemClicked(definition) }
+        onClick = { onItemClicked(definition.id) }
     ) {
         Row(modifier = modifier.fillMaxWidth()) {
             RegularText(

@@ -95,8 +95,8 @@ fun TranslationResultState(
                 TranslationList(
                     list = (result.data as TranslationUiModel).definition,
                     title = stringResource(id = R.string.definition),
-                ) { definition ->
-                    navController.navigate(Destinations.DETAILS + "${definition.id}")
+                ) { id ->
+                    navController.navigate(Destinations.DETAILS + "$id")
                 }
             }
             is TranslationUiState.Empty -> {
