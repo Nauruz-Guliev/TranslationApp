@@ -52,7 +52,7 @@ suspend fun <T> wrapRetrofitError(block: suspend () -> T): T {
 private val regex = "[a-zA-Z]{2,3}-[a-zA-Z]{2,3}".toRegex()
 fun String.checkTranslationLocale(): String {
     if (!this.matches(regex)) {
-        throw AppException.WrongLocaleFormat(
+        throw AppException.WrongLocaleFormatException(
             resource = Resource.String(R.string.error_locale),
             cause = Throwable()
         )
